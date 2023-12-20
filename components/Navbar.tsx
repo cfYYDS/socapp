@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import React from 'react'
 import { Input } from './ui/input'
-import { Moon, Sun } from "lucide-react"
+import { Moon, Sun, User } from "lucide-react"
 import { useTheme } from "next-themes"
  
 import { Button } from "@/components/ui/button"
@@ -12,6 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import Link from 'next/link'
 type Props = {}
 
 const Navbar = (props: Props) => {
@@ -21,6 +22,18 @@ const Navbar = (props: Props) => {
         <div className='flex items-center py-6 gap-10 justify-between'>
             <Image src='/next.svg' width={100} height={40} alt='logo Image' />
             <Input type='text' placeholder='Search' className='w-3/4' />
+            <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="icon">
+            <User className='h-[1.2rem] w-[1.2rem]'/>
+            </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+                <DropdownMenuItem>
+                    <Link href='/signup'>SignUp</Link>
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+            </DropdownMenu>
         <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
