@@ -9,25 +9,24 @@ type SignUpSchemaT = z.infer<typeof SignUpSchema>
 export async function POST(request: Request) {
     const body: SignUpSchemaT = await request.json()
     if (SignUpSchema.parse(body).success=== false) return NextResponse.json('Data provided is not valid', { status: 500 })
-    const userExist = await prisma.user.findUnique({
-        where: {
-            email: body.email
-        }
-    })
-    if (userExist) return NextResponse.json({
-        errorMessage: 'Email is associated with another account'
-    })
+    // const userExist = await prisma.user.findUnique({
+    //     where: {
+    //         email: body.email
+    //     }
+    // })
+    // if (userExist) return NextResponse.json({
+    //     errorMessage: 'Email is associated with another account'
+    // })
     const hashPassword = await bcrypt.hash(body.password, 10)
     var transport = nodemailer.createTransport({
-        host: 'smtp.qq.com',
-        port: 465,
-        secure: true,
+        service: 'qq', //使用的邮箱服务，这里qq为例
+        port: 465, //邮箱服务端口号
+        secure: true, // true for 465, false for other ports
         auth: {
-            user: process.env.USER_MAIL,
-            pass: process.env.USER_PASSWORD
-        }
-
-    })
+          user: process.env.USER_MAIL, //  邮箱地址
+          pass: process.env.USER_PASSWORD //授权码
+        },
+      })
     try {
         const User = await prisma.user.create({
             data: {
@@ -45,7 +44,7 @@ export async function POST(request: Request) {
         })
         const options = {
             from: process.env.USER_MAIL,
-            to: User.email,
+            to: body.email,
             subject: 'Verify your email',
             html: `<a href="${process.env.NEXT_URL}/api/activate/${verificationtoken.token}">Click here to verify your email</a>`
         }
@@ -61,5 +60,4 @@ export async function POST(request: Request) {
     } catch (error) {
         return NextResponse.json({ errorMessage: 'Error creating user', error })
     }
-    return NextResponse.json('Hello')
 }

@@ -46,6 +46,7 @@ model User {
   password      String?
   online        Boolean @default(false)
   forgetpasswordtoken String?
+  verified_user Boolean @default(false)
   emailVerified DateTime?
   image         String?
   accounts      Account[]
